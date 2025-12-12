@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TARA Incident Dashboard</title>
+  <style>
+    :root {
+      --color-primary: #32B8C6;
+      --color-danger: #FF6B6B;
+      --color-warning: #FFA94D;
+      --color-success: #51CF66;
+      --color-bg-dark: #0F1419;
+      --color-bg-secondary: #1a1f2e;
+      --color-card: #1e2736;
+      --color-text: #E8EAED;
+      --color-text-secondary: #9CA3AF;
+      --color-muted: #6B7280;
+      --space-md: 16px;
+      --space-lg: 32px;
+      --radius: 12px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.3);
+      --font-title: 'Inter', 'Segoe UI', sans-serif;
+      --font-main: 'Inter', 'Segoe UI', sans-serif;
+    }
+    html,body {
+      height: 100%; margin: 0; padding: 0;
+      background: var(--color-bg-dark);
+      font-family: var(--font-main);
+      color: var(--color-text);
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--color-bg-secondary);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--color-text);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .navbar-title {
+      font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--color-primary);
+    }
+    .navbar-user {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+    }
+    .navbar-nav {
+      display: flex; gap: 30px; align-items: center;
+    }
+    .navbar-nav a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .navbar-nav a:hover, .navbar-nav a.active {
+      color: var(--color-primary);
+    }
+    .container {
+      padding: var(--space-lg);
+      min-height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card-grid {
+      display: flex;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--space-lg);
+      min-width: 220px;
+      flex: 1;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      background: rgba(50, 184, 198, 0.05);
+      border-color: rgba(50, 184, 198, 0.3);
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--color-text);
+    }
+    .card-status-critical   { color: var(--color-danger); }
+    .card-status-warning    { color: var(--color-warning); }
+    .card-status-success    { color: var(--color-success); }
+    .table-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    table {
+      width:100%; border-collapse:collapse; background: var(--color-card);
+      box-shadow: var(--shadow); border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    th,td {
+      padding: 14px 12px;
+      text-align:left;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    th {
+      color: var(--color-text-secondary); font-weight: 600;
+      background: rgba(255,255,255,0.02);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+    tr:last-child td { border-bottom: none; }
+    .status-pill {
+      display: inline-block;
+      border-radius: 24px;
+      padding: 4px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .status-critical { background: var(--color-danger);}
+    .status-warning  { background: var(--color-warning);}
+    .status-success  { background: var(--color-primary);}
+    .filter-bar {
+      display: flex; gap: 12px; margin-bottom: 18px;
+      align-items: center;
+    }
+    .filter-bar label { font-size: 1rem;}
+    .filter-bar select {
+      padding: 8px 12px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12); font-size:0.95rem;
+      background: var(--color-card);
+      color: var(--color-text);
+    }
+    .filter-bar select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(50, 184, 198, 0.2);
+    }
+    tr:hover { background: rgba(50, 184, 198, 0.08); }
+    @media (max-width: 900px) {
+      .container { padding: var(--space-md); max-width: 100%; }
+      .navbar-nav { display: none; }
+      .card-grid { flex-direction: column; gap: var(--space-md);}
+      th, td { padding: 10px 8px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-title">TARA Dashboard</div>
+    <div class="navbar-user">Analyst: Jane Doe</div>
+  </header>
+  <nav class="navbar-nav">
+    <a href="#" class="active">Cases</a>
+    <a href="analysisPage.html">Analysis</a>
+    <a href="artifactsPage.html">Artifacts</a>
+    <a href="reportsPage.html">Reports</a>
+    <a href="settingsPage.html">Settings</a>
+  </nav>
+  <main class="container">
+    <section class="card-grid">
+      <div class="card">
+        <div class="card-title">Open Cases</div>
+        <div class="card-value">8</div>
+        <div class="status-pill status-success">Active</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Critical Cases</div>
+        <div class="card-value card-status-critical">2</div>
+        <div class="status-pill status-critical">Critical</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Total Artifacts</div>
+        <div class="card-value card-status-success">2,450</div>
+        <div class="status-pill status-success">Collected</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Anomalies Found</div>
+        <div class="card-value card-status-warning">17</div>
+        <div class="status-pill status-warning">Flagged</div>
+      </div>
+    </section>
+    <section>
+      <div class="table-title">Recent Cases</div>
+      <div class="filter-bar">
+        <label for="severity-filter">Severity:</label>
+        <select id="severity-filter">
+          <option>All</option>
+          <option>Critical</option>
+          <option>Warning</option>
+          <option>Normal</option>
+        </select>
+        <label for="status-filter">Status:</label>
+        <select id="status-filter">
+          <option>All</option>
+          <option>Open</option>
+          <option>Closed</option>
+          <option>In Progress</option>
+        </select>
+        <input type="text" id="search" placeholder="Search case ID/host" style="padding:6px 10px;border-radius:8px;border:1px solid #c3c3c3;">
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Title</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Host</th>
+            <th>Artifacts</th>
+            <th>Bad/Suspicious</th>
+            <th>Opened</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CASE-20251124-01</td>
+            <td>Ransomware Detected</td>
+            <td><span class="status-pill status-critical">Critical</span></td>
+            <td>Open</td>
+            <td>WS-Finance-101</td>
+            <td>312</td>
+            <td>8/42</td>
+            <td>3h ago</td>
+          </tr>
+          <tr>
+            <td>CASE-20251126-02</td>
+            <td>Suspicious PowerShell Activity</td>
+            <td><span class="status-pill status-warning">Warning</span></td>
+            <td>In Progress</td>
+            <td>WS-Finance-205</td>
+            <td>127</td>
+            <td>4/25</td>
+            <td>1h ago</td>
+          </tr>
+          <tr>
+            <td>CASE-20251126-03</td>
+            <td>Malicious File Detected</td>
+            <td><span class="status-pill status-critical">Critical</span></td>
+            <td>Open</td>
+            <td>WORKSTATION-303</td>
+            <td>257</td>
+            <td>10/38</td>
+            <td>5h ago</td>
+          </tr>
+          <tr>
+            <td>CASE-20251126-09</td>
+            <td>Unusual Network Traffic</td>
+            <td><span class="status-pill status-warning">Warning</span></td>
+            <td>Open</td>
+            <td>SRV-01-Infra</td>
+            <td>59</td>
+            <td>1/12</td>
+            <td>25m ago</td>
+          </tr>
+          <tr>
+            <td>CASE-20251125-12</td>
+            <td>Login Anomaly Detected</td>
+            <td><span class="status-pill status-success">Normal</span></td>
+            <td>Closed</td>
+            <td>HR-Laptop-9</td>
+            <td>32</td>
+            <td>0/2</td>
+            <td>1d ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
